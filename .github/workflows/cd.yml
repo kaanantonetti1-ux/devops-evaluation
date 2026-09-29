@@ -1,0 +1,16 @@
+name: CD
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  placeholder:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Placeholder
+        run: echo "CD workflow will be configured later."
