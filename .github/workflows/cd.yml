@@ -133,7 +133,7 @@ jobs:
             docker start $redis 2>$null
           }
 
-            - name: Deploy application
+      - name: Deploy application
         shell: powershell
         run: |
           $app = "devops-app-prod"
@@ -179,7 +179,7 @@ jobs:
             -e REDIS_PORT=6379 `
             -e APP_VERSION=$env:SHORT_SHA `
             "${env:IMAGE}:$env:SHORT_SHA"
-            
+
       - name: Verify deployment health
         shell: powershell
         run: |
