@@ -133,28 +133,43 @@ jobs:
             docker start $redis 2>$null
           }
 
-      - name: Deploy application
+            - name: Deploy application
         shell: powershell
         run: |
           $app = "devops-app-prod"
 
-          $previousImage = docker inspect `
-            -f "{{.Config.Image}}" `
-            $app 2>$null
+          $existingApp = docker ps -a `
+            --filter "name=^/$app$" `
+            --format "{{.Names}}"
 
-          if ($LASTEXITCODE -ne 0) {
-            $previousImage = ""
+          if ($existingApp) {
+            $previousImage = docker inspect `
+              -f "{{.Config.Image}}" `
+              $app
+
+            "PREVIOUS_IMAGE=$previousImage" |
+              Out-File `
+                -FilePath $env:GITHUB_ENV `
+                -Encoding utf8 `
+                -Append
+
+            docker rm -f $app
+          }
+          else {
+            "PREVIOUS_IMAGE=" |
+              Out-File `
+                -FilePath $env:GITHUB_ENV `
+                -Encoding utf8 `
+                -Append
           }
 
-          "PREVIOUS_IMAGE=$previousImage" |
-            Out-File `
-              -FilePath $env:GITHUB_ENV `
-              -Encoding utf8 `
-              -Append
+          $oldApp = docker ps -a `
+            --filter "name=^/devops-app$" `
+            --format "{{.Names}}"
 
-          docker rm -f $app 2>$null
-
-          docker rm -f devops-app 2>$null
+          if ($oldApp) {
+            docker rm -f devops-app
+          }
 
           docker run -d `
             --name $app `
@@ -164,7 +179,7 @@ jobs:
             -e REDIS_PORT=6379 `
             -e APP_VERSION=$env:SHORT_SHA `
             "${env:IMAGE}:$env:SHORT_SHA"
-
+            
       - name: Verify deployment health
         shell: powershell
         run: |
