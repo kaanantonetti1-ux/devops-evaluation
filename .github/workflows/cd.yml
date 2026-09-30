@@ -101,12 +101,12 @@ jobs:
 
     steps:
       - name: Pull deployment image
-        shell: pwsh
+        shell: powershell
         run: |
           docker pull "${env:IMAGE}:$env:SHORT_SHA"
 
       - name: Prepare Docker environment
-        shell: pwsh
+        shell: powershell
         run: |
           $network = "devops-evaluation-net"
           $redis = "devops-redis-prod"
@@ -134,7 +134,7 @@ jobs:
           }
 
       - name: Deploy application
-        shell: pwsh
+        shell: powershell
         run: |
           $app = "devops-app-prod"
 
@@ -166,7 +166,7 @@ jobs:
             "${env:IMAGE}:$env:SHORT_SHA"
 
       - name: Verify deployment health
-        shell: pwsh
+        shell: powershell
         run: |
           $healthy = $false
 
@@ -197,7 +197,7 @@ jobs:
 
       - name: Roll back failed deployment
         if: ${{ failure() && env.PREVIOUS_IMAGE != '' }}
-        shell: pwsh
+        shell: powershell
         run: |
           Write-Host "Rolling back to $env:PREVIOUS_IMAGE"
 
