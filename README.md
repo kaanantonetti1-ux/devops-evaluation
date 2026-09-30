@@ -39,3 +39,18 @@ devops-evaluation/
 ├── .gitattributes
 ├── .yamllint.yml
 └── README.md
+
+## Run the project locally
+
+### Requirements
+
+- Docker Desktop
+- Docker Compose
+- Git
+
+### Start the application
+
+From the project directory:
+
+```powershell
+docker compose up --build
